@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.cloroapp</groupId>
+    <artifactId>cloro-backend-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>CloroApp Backend Microservices</name>
+    <description>Agregador Maven para ms-monitoreo (8081) y ms-alertas (8082)</description>
+
+    <modules>
+        <module>ms-monitoreo</module>
+        <module>ms-alertas</module>
+    </modules>
+</project>

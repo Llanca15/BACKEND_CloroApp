@@ -1,8 +1,11 @@
 package com.cloroapp.alertas.controller
 
+import com.cloroapp.alertas.dto.AccionResponse
+import com.cloroapp.alertas.dto.ActualizarAlertaRequest
 import com.cloroapp.alertas.dto.AlertaResponse
 import com.cloroapp.alertas.dto.CerrarAlertaRequest
 import com.cloroapp.alertas.dto.CrearAlertaRequest
+import com.cloroapp.alertas.service.AccionCorrectivaService
 import com.cloroapp.alertas.service.AlertaService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -24,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/alertas")
 @Tag(name = "Alertas de Cloro", description = "Endpoints para monitoreo y ciclo de vida de alertas por desviaciones de cloro")
 class AlertaController(
-    private val alertaService: AlertaService
+    private val alertaService: AlertaService,
+    private val accionService: AccionCorrectivaService
 ) {
 
     @GetMapping
@@ -41,6 +45,13 @@ class AlertaController(
     ): ResponseEntity<AlertaResponse> =
         ResponseEntity.ok(alertaService.obtenerPorId(id))
 
+    @GetMapping("/{alertaId}/acciones")
+    @Operation(summary = "Listar acciones de una alerta", description = "Retorna las acciones correctivas registradas para una alerta específica")
+    fun listarAccionesPorAlerta(
+        @PathVariable alertaId: Long
+    ): ResponseEntity<List<AccionResponse>> =
+        ResponseEntity.ok(accionService.listar(alertaId))
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Generar nueva alerta", description = "Crea una alerta ante lecturas críticas o advertencias de cloro")
@@ -51,11 +62,19 @@ class AlertaController(
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva)
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar alerta", description = "Modifica los atributos o estado de una alerta")
+    fun actualizar(
+        @PathVariable id: Long,
+        @RequestBody request: ActualizarAlertaRequest
+    ): ResponseEntity<AlertaResponse> =
+        ResponseEntity.ok(alertaService.actualizar(id, request))
+
     @PutMapping("/{id}/cerrar")
     @Operation(summary = "Cerrar y validar alerta", description = "Cierra una alerta validada por un supervisor con sus observaciones")
     fun cerrar(
         @PathVariable id: Long,
-        @Valid @RequestBody request: CerrarAlertaRequest
+        @RequestBody request: CerrarAlertaRequest
     ): ResponseEntity<AlertaResponse> =
         ResponseEntity.ok(alertaService.cerrar(id, request))
 

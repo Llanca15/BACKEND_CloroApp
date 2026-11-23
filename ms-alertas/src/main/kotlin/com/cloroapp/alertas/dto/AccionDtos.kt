@@ -20,9 +20,8 @@ data class CrearAccionRequest(
     @field:NotNull(message = "El ID de la alerta es obligatorio")
     val alertaId: Long,
 
-    @field:NotBlank(message = "El código del punto es obligatorio")
     @field:Size(max = 32, message = "El código de punto no puede superar 32 caracteres")
-    val codigoPunto: String,
+    val codigoPunto: String? = "",
 
     @field:NotBlank(message = "La descripción de la acción es obligatoria")
     @field:Size(max = 500, message = "La descripción no puede superar 500 caracteres")
@@ -38,6 +37,14 @@ data class CrearAccionRequest(
     val estadoResolucion: String? = "REGISTRADA",
 
     @field:Size(max = 300, message = "La ruta de la foto no puede superar 300 caracteres")
+    val fotoRuta: String? = null
+)
+
+data class ActualizarAccionRequest(
+    val descripcion: String? = null,
+    val responsable: String? = null,
+    val fechaHoraMillis: Long? = null,
+    val estadoResolucion: String? = null,
     val fotoRuta: String? = null
 )
 

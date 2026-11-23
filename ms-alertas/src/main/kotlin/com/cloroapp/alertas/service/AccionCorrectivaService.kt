@@ -1,6 +1,7 @@
 package com.cloroapp.alertas.service
 
 import com.cloroapp.alertas.dto.AccionResponse
+import com.cloroapp.alertas.dto.ActualizarAccionRequest
 import com.cloroapp.alertas.dto.CrearAccionRequest
 import com.cloroapp.alertas.dto.toResponse
 import com.cloroapp.alertas.exception.ResourceNotFoundException
@@ -35,13 +36,14 @@ class AccionCorrectivaService(
     }
 
     fun crear(request: CrearAccionRequest): AccionResponse {
-        if (!alertaRepository.existsById(request.alertaId)) {
-            throw ResourceNotFoundException("No se puede registrar la acción. La alerta con ID ${request.alertaId} no existe")
-        }
+        val alerta = alertaRepository.findById(request.alertaId)
+            .orElseThrow { ResourceNotFoundException("No se puede registrar la acción. La alerta con ID ${request.alertaId} no existe") }
+
+        val codigoPuntoFinal = request.codigoPunto?.trim()?.takeIf { it.isNotBlank() } ?: alerta.codigoPunto
 
         val entidad = AccionCorrectiva(
             alertaId = request.alertaId,
-            codigoPunto = request.codigoPunto.trim().uppercase(),
+            codigoPunto = codigoPuntoFinal.uppercase(),
             descripcion = request.descripcion.trim(),
             responsable = request.responsable.trim(),
             fechaHoraMillis = request.fechaHoraMillis ?: System.currentTimeMillis(),
@@ -50,6 +52,19 @@ class AccionCorrectivaService(
         )
 
         return accionRepository.save(entidad).toResponse()
+    }
+
+    fun actualizar(id: Long, request: ActualizarAccionRequest): AccionResponse {
+        val accion = accionRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("Acción correctiva no encontrada con ID: $id") }
+
+        request.descripcion?.takeIf { it.isNotBlank() }?.let { accion.descripcion = it.trim() }
+        request.responsable?.takeIf { it.isNotBlank() }?.let { accion.responsable = it.trim() }
+        request.fechaHoraMillis?.let { accion.fechaHoraMillis = it }
+        request.estadoResolucion?.takeIf { it.isNotBlank() }?.let { accion.estadoResolucion = it.trim().uppercase() }
+        request.fotoRuta?.let { accion.fotoRuta = it.trim() }
+
+        return accionRepository.save(accion).toResponse()
     }
 
     fun eliminar(id: Long) {

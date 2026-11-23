@@ -36,16 +36,28 @@ data class CrearAlertaRequest(
     @field:NotBlank(message = "La severidad es obligatoria (ADVERTENCIA o CRITICO)")
     val severidad: String,
 
+    val estado: String? = "ABIERTA",
+
     val fechaHoraMillis: Long? = null
 )
 
-data class CerrarAlertaRequest(
-    @field:NotBlank(message = "El usuario que cierra la alerta es obligatorio")
-    @field:Size(max = 100, message = "El nombre del usuario no puede superar 100 caracteres")
-    val cerradaPor: String,
-
-    @field:Size(max = 500, message = "La observación de cierre no puede superar 500 caracteres")
+data class ActualizarAlertaRequest(
+    val codigoPunto: String? = null,
+    val valorPpm: Double? = null,
+    val tipo: String? = null,
+    val severidad: String? = null,
+    val estado: String? = null,
+    val fechaHoraMillis: Long? = null,
+    val cerradaPor: String? = null,
+    val fechaCierreMillis: Long? = null,
     val observacionCierre: String? = null
+)
+
+data class CerrarAlertaRequest(
+    val cerradaPor: String? = "Supervisor",
+    val fechaCierreMillis: Long? = null,
+    val observacionCierre: String? = null,
+    val estado: String? = "CERRADA"
 )
 
 fun Alerta.toResponse(): AlertaResponse = AlertaResponse(

@@ -1,5 +1,6 @@
 package com.cloroapp.alertas.service
 
+import com.cloroapp.alertas.dto.ActualizarAlertaRequest
 import com.cloroapp.alertas.dto.AlertaResponse
 import com.cloroapp.alertas.dto.CerrarAlertaRequest
 import com.cloroapp.alertas.dto.CrearAlertaRequest
@@ -41,10 +42,27 @@ class AlertaService(
             valorPpm = request.valorPpm,
             tipo = request.tipo.trim().uppercase(),
             severidad = request.severidad.trim().uppercase(),
-            estado = "ABIERTA",
+            estado = request.estado?.trim()?.uppercase() ?: "ABIERTA",
             fechaHoraMillis = request.fechaHoraMillis ?: System.currentTimeMillis()
         )
         return alertaRepository.save(entidad).toResponse()
+    }
+
+    fun actualizar(id: Long, request: ActualizarAlertaRequest): AlertaResponse {
+        val alerta = alertaRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("Alerta no encontrada con ID: $id") }
+
+        request.codigoPunto?.takeIf { it.isNotBlank() }?.let { alerta.codigoPunto = it.trim().uppercase() }
+        request.valorPpm?.let { alerta.valorPpm = it }
+        request.tipo?.takeIf { it.isNotBlank() }?.let { alerta.tipo = it.trim().uppercase() }
+        request.severidad?.takeIf { it.isNotBlank() }?.let { alerta.severidad = it.trim().uppercase() }
+        request.estado?.takeIf { it.isNotBlank() }?.let { alerta.estado = it.trim().uppercase() }
+        request.fechaHoraMillis?.let { alerta.fechaHoraMillis = it }
+        request.cerradaPor?.let { alerta.cerradaPor = it.trim() }
+        request.fechaCierreMillis?.let { alerta.fechaCierreMillis = it }
+        request.observacionCierre?.let { alerta.observacionCierre = it.trim() }
+
+        return alertaRepository.save(alerta).toResponse()
     }
 
     fun cerrar(id: Long, request: CerrarAlertaRequest): AlertaResponse {
@@ -52,8 +70,8 @@ class AlertaService(
             .orElseThrow { ResourceNotFoundException("Alerta no encontrada con ID: $id") }
 
         alerta.estado = "CERRADA"
-        alerta.cerradaPor = request.cerradaPor.trim()
-        alerta.fechaCierreMillis = System.currentTimeMillis()
+        alerta.cerradaPor = request.cerradaPor?.trim()?.takeIf { it.isNotBlank() } ?: "Supervisor"
+        alerta.fechaCierreMillis = request.fechaCierreMillis ?: System.currentTimeMillis()
         alerta.observacionCierre = request.observacionCierre?.trim().orEmpty()
 
         return alertaRepository.save(alerta).toResponse()

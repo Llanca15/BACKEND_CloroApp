@@ -39,7 +39,9 @@ Backend distribuido compuesto por dos microservicios desarrollados en Kotlin con
 #### Alertas (`/api/alertas`)
 - `GET /api/alertas`: Lista alertas registradas (opcional `?estado=ABIERTA` o `CERRADA`).
 - `GET /api/alertas/{id}`: Detalle de una alerta específica.
+- `GET /api/alertas/{alertaId}/acciones`: Lista las acciones correctivas de una alerta.
 - `POST /api/alertas`: Registra una nueva alerta ante desviación crítica o advertencia.
+- `PUT /api/alertas/{id}`: Actualiza los datos o estado de una alerta (`EN_GESTION`, etc.).
 - `PUT /api/alertas/{id}/cerrar`: Cierre y validación de una alerta por supervisor.
 - `DELETE /api/alertas/{id}`: Elimina una alerta y sus acciones asociadas.
 
@@ -47,6 +49,7 @@ Backend distribuido compuesto por dos microservicios desarrollados en Kotlin con
 - `GET /api/acciones`: Lista acciones registradas (opcional `?alertaId=...`).
 - `GET /api/acciones/{id}`: Detalle de una acción correctiva.
 - `POST /api/acciones`: Registra una medida correctiva ante una alerta abierta.
+- `PUT /api/acciones/{id}`: Actualiza los datos o estado de una acción correctiva.
 - `DELETE /api/acciones/{id}`: Elimina el registro de una acción correctiva.
 
 ---

@@ -1,6 +1,7 @@
 package com.cloroapp.alertas.controller
 
 import com.cloroapp.alertas.dto.AccionResponse
+import com.cloroapp.alertas.dto.ActualizarAccionRequest
 import com.cloroapp.alertas.dto.CrearAccionRequest
 import com.cloroapp.alertas.service.AccionCorrectivaService
 import io.swagger.v3.oas.annotations.Operation
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -48,6 +50,14 @@ class AccionCorrectivaController(
         val nueva = accionService.crear(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva)
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar acción correctiva", description = "Modifica los datos o estado de resolución de una acción correctiva")
+    fun actualizar(
+        @PathVariable id: Long,
+        @RequestBody request: ActualizarAccionRequest
+    ): ResponseEntity<AccionResponse> =
+        ResponseEntity.ok(accionService.actualizar(id, request))
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

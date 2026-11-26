@@ -42,7 +42,6 @@ class AccionCorrectivaController(
         ResponseEntity.ok(accionService.obtenerPorId(id))
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Registrar acción correctiva", description = "Asocia una nueva medida correctiva a una alerta existente")
     fun crear(
         @Valid @RequestBody request: CrearAccionRequest

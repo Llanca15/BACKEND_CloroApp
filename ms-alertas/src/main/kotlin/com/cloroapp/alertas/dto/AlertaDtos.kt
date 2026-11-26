@@ -5,6 +5,7 @@ import jakarta.validation.constraints.DecimalMax
 import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
 data class AlertaResponse(
@@ -31,9 +32,11 @@ data class CrearAlertaRequest(
     val valorPpm: Double,
 
     @field:NotBlank(message = "El tipo de desviación es obligatorio (INSUFICIENTE o EXCESIVO)")
+    @field:Pattern(regexp = "(?i)INSUFICIENTE|EXCESIVO", message = "El tipo debe ser INSUFICIENTE o EXCESIVO")
     val tipo: String,
 
     @field:NotBlank(message = "La severidad es obligatoria (ADVERTENCIA o CRITICO)")
+    @field:Pattern(regexp = "(?i)ADVERTENCIA|CRITICO", message = "La severidad debe ser ADVERTENCIA o CRITICO")
     val severidad: String,
 
     val estado: String? = "ABIERTA",

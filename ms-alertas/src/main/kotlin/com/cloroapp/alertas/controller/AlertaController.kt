@@ -53,7 +53,6 @@ class AlertaController(
         ResponseEntity.ok(accionService.listar(alertaId))
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Generar nueva alerta", description = "Crea una alerta ante lecturas críticas o advertencias de cloro")
     fun crear(
         @Valid @RequestBody request: CrearAlertaRequest

@@ -69,10 +69,13 @@ class AlertaService(
         val alerta = alertaRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Alerta no encontrada con ID: $id") }
 
+        if (alerta.estado == "CERRADA") {
+            throw IllegalArgumentException("La alerta con ID $id ya se encuentra cerrada")
+        }
         alerta.estado = "CERRADA"
         alerta.cerradaPor = request.cerradaPor?.trim()?.takeIf { it.isNotBlank() } ?: "Supervisor"
         alerta.fechaCierreMillis = request.fechaCierreMillis ?: System.currentTimeMillis()
-        alerta.observacionCierre = request.observacionCierre?.trim().orEmpty()
+        alerta.observacionCierre = request.observacionCierre?.trim()?.takeIf { it.isNotEmpty() }
 
         return alertaRepository.save(alerta).toResponse()
     }

@@ -3,6 +3,7 @@ package com.cloroapp.alertas.dto
 import com.cloroapp.alertas.model.AccionCorrectiva
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
 data class AccionResponse(
@@ -34,6 +35,7 @@ data class CrearAccionRequest(
     val fechaHoraMillis: Long? = null,
 
     @field:Size(max = 30, message = "El estado no puede superar 30 caracteres")
+    @field:Pattern(regexp = "(?i)REGISTRADA|APLICADA|VERIFICADA", message = "El estado debe ser REGISTRADA, APLICADA o VERIFICADA")
     val estadoResolucion: String? = "REGISTRADA",
 
     @field:Size(max = 300, message = "La ruta de la foto no puede superar 300 caracteres")
